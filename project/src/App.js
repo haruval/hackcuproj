@@ -26,7 +26,7 @@ function App() {
     setAssistantId('asst_QjNSTqtCsL8J2Rs8A4UP4xNo');
     
     // Set document title
-    document.title = "OpenAI Assistant Chat";
+    document.title = "pc chat :3";
   }, []);
 
   // Create a new thread when the component mounts
@@ -167,7 +167,7 @@ function App() {
           maxHeight: '80vh',
         }}
       >
-        <h2 style={{ margin: '0 0 15px 0', textAlign: 'center', color: '#FFFFFF' }}>OpenAI Assistant Chat</h2>
+        <h2 style={{ margin: '0 0 15px 0', textAlign: 'center', color: '#FFFFFF' }}>:3</h2>
         
         <div
           style={{
