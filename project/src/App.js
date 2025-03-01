@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import OpenAI from 'openai';
+import ReactMarkdown from 'react-markdown';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -140,6 +141,43 @@ function App() {
     }
   };
 
+  // Process message content to convert Markdown-like syntax to actual Markdown
+  const processMessageContent = (content) => {
+    // Handle the case where the content starts with "Lucy:" or similar
+    const processedContent = content.replace(/^(Lucy|Assistant):\s+/i, '');
+    
+    // Convert **text** to Markdown bold
+    return processedContent;
+  };
+
+  // Custom CSS for markdown styling
+  const markdownStyles = {
+    p: {
+      marginBottom: '8px',
+      lineHeight: '1.5',
+    },
+    ul: {
+      paddingLeft: '20px',
+      marginBottom: '8px',
+    },
+    li: {
+      marginBottom: '4px',
+    },
+    strong: {
+      fontWeight: 'bold',
+    },
+    h1: {
+      fontSize: '1.5em',
+      fontWeight: 'bold',
+      marginBottom: '8px',
+    },
+    h2: {
+      fontSize: '1.3em',
+      fontWeight: 'bold',
+      marginBottom: '8px',
+    },
+  };
+
   return (
     <div style={{ 
       position: 'relative', 
@@ -201,7 +239,21 @@ function App() {
                   color: '#FFFFFF'
                 }}
               >
-                <strong>{msg.role === 'user' ? 'You' : 'Lucy'}:</strong> {msg.content}
+                <strong>{msg.role === 'user' ? 'You' : 'Lucy'}:</strong>{' '}
+                {msg.role === 'assistant' ? (
+                  <ReactMarkdown components={{
+                    p: ({node, ...props}) => <p style={markdownStyles.p} {...props} />,
+                    ul: ({node, ...props}) => <ul style={markdownStyles.ul} {...props} />,
+                    li: ({node, ...props}) => <li style={markdownStyles.li} {...props} />,
+                    strong: ({node, ...props}) => <strong style={markdownStyles.strong} {...props} />,
+                    h1: ({node, ...props}) => <h1 style={markdownStyles.h1} {...props} />,
+                    h2: ({node, ...props}) => <h2 style={markdownStyles.h2} {...props} />,
+                  }}>
+                    {processMessageContent(msg.content)}
+                  </ReactMarkdown>
+                ) : (
+                  msg.content
+                )}
               </div>
             ))
           )}
