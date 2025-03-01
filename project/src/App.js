@@ -26,7 +26,7 @@ function App() {
     setAssistantId('asst_QjNSTqtCsL8J2Rs8A4UP4xNo');
     
     // Set document title
-    document.title = "pc chat :3";
+    document.title = "Lucy";
   }, []);
 
   // Create a new thread when the component mounts
@@ -145,7 +145,7 @@ function App() {
       position: 'relative', 
       width: '100%', 
       height: '100vh', 
-      fontFamily: '"Times New Roman", serif',
+      fontFamily: '"Helvetica", "Arial", sans-serif',
       backgroundColor: '#000000', // Black background
       display: 'flex',
       justifyContent: 'center',
@@ -159,7 +159,7 @@ function App() {
           backgroundColor: '#000000', // Black background
           padding: '20px',
           borderRadius: '12px',
-          fontFamily: '"Times New Roman", serif',
+          fontFamily: '"Helvetica", "Arial", sans-serif',
           fontSize: '18px',
           border: '2px solid #FFFFFF', // White border
           display: 'flex',
@@ -167,7 +167,7 @@ function App() {
           maxHeight: '80vh',
         }}
       >
-        <h2 style={{ margin: '0 0 15px 0', textAlign: 'center', color: '#FFFFFF' }}>:3</h2>
+        <h2 style={{ margin: '0 0 15px 0', textAlign: 'center', color: '#FFFFFF' }}>Lucy</h2>
         
         <div
           style={{
@@ -183,7 +183,7 @@ function App() {
         >
           {messages.length === 0 ? (
             <div style={{ color: '#AAAAAA', textAlign: 'center', marginTop: '20px' }}>
-              Start a conversation...
+              hai!!! i can help you start your pc build :3
             </div>
           ) : (
             messages.map((msg, i) => (
@@ -220,7 +220,7 @@ function App() {
               border: '1px solid #FFFFFF',
               backgroundColor: '#111111',
               color: '#FFFFFF',
-              fontFamily: '"Times New Roman", serif',
+              fontFamily: '"Helvetica", "Arial", sans-serif',
               fontSize: '16px',
             }}
             type="text"
@@ -237,7 +237,7 @@ function App() {
               border: '1px solid #FFFFFF',
               backgroundColor: '#333333',
               color: '#FFFFFF',
-              fontFamily: '"Times New Roman", serif',
+              fontFamily: '"Helvetica", "Arial", sans-serif',
               fontSize: '16px',
               cursor: 'pointer',
               transition: 'background-color 0.3s'
