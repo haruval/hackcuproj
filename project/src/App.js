@@ -201,12 +201,12 @@ function App() {
                   color: '#FFFFFF'
                 }}
               >
-                <strong>{msg.role === 'user' ? 'You' : 'Assistant'}:</strong> {msg.content}
+                <strong>{msg.role === 'user' ? 'You' : 'Lucy'}:</strong> {msg.content}
               </div>
             ))
           )}
           {isLoading && (
-            <div style={{ textAlign: 'left', color: '#888' }}>Assistant is thinking...</div>
+            <div style={{ textAlign: 'left', color: '#888' }}>cooking...</div>
           )}
           <div ref={messagesEndRef} />
         </div>
