@@ -15,6 +15,7 @@ function App() {
   const [currentPhaseNumber, setCurrentPhaseNumber] = useState(1);
   const [helpMode, setHelpMode] = useState(false);
   const [buildComplete, setBuildComplete] = useState(false);
+  const [activeRun, setActiveRun] = useState(null);
   const messagesEndRef = useRef(null);
 
   // Initialize OpenAI client
@@ -57,6 +58,53 @@ function App() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, currentPhase]);
+
+  // Check if there's an active run on the thread
+  const checkActiveRun = async () => {
+    if (!threadId || !openai) return null;
+    
+    try {
+      // List all runs on the thread
+      const runs = await openai.beta.threads.runs.list(threadId);
+      
+      // Find any run that is not completed or failed
+      const activeRuns = runs.data.filter(run => 
+        !["completed", "failed", "cancelled", "expired"].includes(run.status)
+      );
+      
+      if (activeRuns.length > 0) {
+        return activeRuns[0];
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("Error checking active runs:", error);
+      return null;
+    }
+  };
+
+  // Cancel an active run if needed
+  const cancelRunIfNeeded = async () => {
+    // Check for any active run
+    const runToCancel = await checkActiveRun();
+    
+    if (runToCancel) {
+      console.log("Cancelling active run:", runToCancel.id);
+      try {
+        await openai.beta.threads.runs.cancel(threadId, runToCancel.id);
+        
+        // Wait a moment to ensure the cancellation takes effect
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        return true;
+      } catch (error) {
+        console.error("Error cancelling run:", error);
+        return false;
+      }
+    }
+    
+    return true; // No run to cancel
+  };
 
   // Function to extract parts table from the response
   const extractPartsTable = (response) => {
@@ -118,6 +166,12 @@ function App() {
     setIsLoading(true);
     
     try {
+      // First, cancel any active run
+      const cancelled = await cancelRunIfNeeded();
+      if (!cancelled) {
+        throw new Error("Could not cancel active run");
+      }
+      
       // Add instructions for the hidden table format
       let messageWithInstructions = userMessage;
       
@@ -160,12 +214,16 @@ This hidden section won't be visible to the user but will be used to update the 
         assistant_id: assistantId
       });
       
+      // Save the active run ID
+      setActiveRun(run.id);
+      
       // Poll for the run completion
       let runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
       
       // Poll until the run completes
       while (runStatus.status !== "completed") {
         if (["failed", "cancelled", "expired"].includes(runStatus.status)) {
+          setActiveRun(null);
           throw new Error(`Run ended with status: ${runStatus.status}`);
         }
         
@@ -173,6 +231,9 @@ This hidden section won't be visible to the user but will be used to update the 
         await new Promise(resolve => setTimeout(resolve, 1000));
         runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
       }
+      
+      // Clear the active run ID
+      setActiveRun(null);
       
       // Get the messages from the thread
       const messagesList = await openai.beta.threads.messages.list(threadId);
@@ -206,6 +267,7 @@ This hidden section won't be visible to the user but will be used to update the 
       
     } catch (error) {
       console.error("Error getting assistant response:", error);
+      setActiveRun(null);
       setIsLoading(false);
       return "Sorry, I encountered an error while processing your request.";
     }
@@ -253,73 +315,95 @@ This hidden section won't be visible to the user but will be used to update the 
   const getNextBuildPhase = async () => {
     setIsLoading(true);
     
-    // Construct a request message for the specific phase
-    const phaseRequest = `Please provide detailed instructions for Phase ${currentPhaseNumber} of building this PC with the selected components. Only provide instructions for this specific phase, not the entire build process.`;
-    
-    // Add user message to thread (not displayed in UI)
-    await openai.beta.threads.messages.create(threadId, {
-      role: "user",
-      content: phaseRequest
-    });
-    
-    // Run the assistant
-    const run = await openai.beta.threads.runs.create(threadId, {
-      assistant_id: assistantId
-    });
-    
-    // Poll for completion
-    let runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
-    
-    while (runStatus.status !== "completed") {
-      if (["failed", "cancelled", "expired"].includes(runStatus.status)) {
-        setIsLoading(false);
-        setCurrentPhase("Error: Failed to get build instructions. Please try again.");
-        return;
+    try {
+      // First, cancel any active run
+      const cancelled = await cancelRunIfNeeded();
+      if (!cancelled) {
+        throw new Error("Could not cancel active run");
       }
       
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
-    }
-    
-    // Get the response
-    const messagesList = await openai.beta.threads.messages.list(threadId);
-    const assistantMessages = messagesList.data.filter(msg => msg.role === "assistant");
-    
-    if (assistantMessages.length > 0) {
-      const latestMessage = assistantMessages[0];
-      const response = latestMessage.content[0].text.value;
+      // Construct a request message for the specific phase
+      const phaseRequest = `Please provide detailed instructions for Phase ${currentPhaseNumber} of building this PC with the selected components. Only provide instructions for this specific phase, not the entire build process.`;
       
-      // Check if we've reached the end of the build phases
-      if (response.toLowerCase().includes("all phases are complete") || 
-          response.toLowerCase().includes("that concludes the build process") ||
-          response.toLowerCase().includes("no more phases") ||
-          response.toLowerCase().includes("build is now complete")) {
-        setBuildComplete(true);
-      } else {
-        // Extract and format the phase title and content
-        let phaseTitle = `Phase ${currentPhaseNumber}`;
-        let phaseContent = response;
-        
-        // Try to extract a better title from the response
-        const titleMatch = response.match(/^\s*\*\*(.+?)\*\*\s*$/m);
-        if (titleMatch) {
-          phaseTitle = titleMatch[1].trim();
-          phaseContent = response.replace(titleMatch[0], '').trim();
+      // Add user message to thread (not displayed in UI)
+      await openai.beta.threads.messages.create(threadId, {
+        role: "user",
+        content: phaseRequest
+      });
+      
+      // Run the assistant
+      const run = await openai.beta.threads.runs.create(threadId, {
+        assistant_id: assistantId
+      });
+      
+      // Save the active run ID
+      setActiveRun(run.id);
+      
+      // Poll for completion
+      let runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
+      
+      while (runStatus.status !== "completed") {
+        if (["failed", "cancelled", "expired"].includes(runStatus.status)) {
+          setActiveRun(null);
+          setIsLoading(false);
+          setCurrentPhase("Error: Failed to get build instructions. Please try again.");
+          return;
         }
         
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
+      }
+      
+      // Clear the active run ID
+      setActiveRun(null);
+      
+      // Get the response
+      const messagesList = await openai.beta.threads.messages.list(threadId);
+      const assistantMessages = messagesList.data.filter(msg => msg.role === "assistant");
+      
+      if (assistantMessages.length > 0) {
+        const latestMessage = assistantMessages[0];
+        const response = latestMessage.content[0].text.value;
+        
+        // Check if we've reached the end of the build phases
+        if (response.toLowerCase().includes("all phases are complete") || 
+            response.toLowerCase().includes("that concludes the build process") ||
+            response.toLowerCase().includes("no more phases") ||
+            response.toLowerCase().includes("build is now complete")) {
+          setBuildComplete(true);
+        } else {
+          // Extract and format the phase title and content
+          let phaseTitle = `Phase ${currentPhaseNumber}`;
+          let phaseContent = response;
+          
+          // Try to extract a better title from the response
+          const titleMatch = response.match(/^\s*\*\*(.+?)\*\*\s*$/m);
+          if (titleMatch) {
+            phaseTitle = titleMatch[1].trim();
+            phaseContent = response.replace(titleMatch[0], '').trim();
+          }
+          
+          setCurrentPhase({
+            title: phaseTitle,
+            content: phaseContent
+          });
+        }
+      } else {
         setCurrentPhase({
-          title: phaseTitle,
-          content: phaseContent
+          title: `Phase ${currentPhaseNumber}`,
+          content: "Sorry, I couldn't get instructions for this phase. Please try again."
         });
       }
-    } else {
+      
+    } catch (error) {
+      console.error("Error getting next build phase:", error);
       setCurrentPhase({
-        title: `Phase ${currentPhaseNumber}`,
-        content: "Sorry, I couldn't get instructions for this phase. Please try again."
+        title: `Error`,
+        content: "There was an error fetching the build instructions. Please try again or go back to planning."
       });
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   // Handle "Next" button click
@@ -423,12 +507,12 @@ This hidden section won't be visible to the user but will be used to update the 
     );
   };
 
-  // Effect to get the next phase whenever currentPhaseNumber changes
+  // Effect to get the next phase whenever currentPhaseNumber changes on initial load
   useEffect(() => {
-    if (buildMode && currentPhaseNumber > 1) {
+    if (buildMode && currentPhaseNumber > 1 && !currentPhase) {
       getNextBuildPhase();
     }
-  }, [currentPhaseNumber]);
+  }, [buildMode, currentPhaseNumber]);
 
   return (
     <div style={{ 
@@ -705,6 +789,7 @@ This hidden section won't be visible to the user but will be used to update the 
                           
                           <button
                             onClick={handleNextPhase}
+                            disabled={isLoading}
                             style={{
                               flex: 1,
                               padding: '15px',
@@ -714,7 +799,8 @@ This hidden section won't be visible to the user but will be used to update the 
                               borderRadius: '8px',
                               fontSize: '18px',
                               fontWeight: 'bold',
-                              cursor: 'pointer'
+                              cursor: isLoading ? 'not-allowed' : 'pointer',
+                              opacity: isLoading ? 0.7 : 1
                             }}
                           >
                             Next
@@ -724,6 +810,7 @@ This hidden section won't be visible to the user but will be used to update the 
                         /* Show 'Got it, next phase' button when in help mode */
                         <button
                           onClick={handleGotItNextPhase}
+                          disabled={isLoading}
                           style={{
                             width: '100%',
                             padding: '15px',
@@ -733,7 +820,8 @@ This hidden section won't be visible to the user but will be used to update the 
                             borderRadius: '8px',
                             fontSize: '18px',
                             fontWeight: 'bold',
-                            cursor: 'pointer'
+                            cursor: isLoading ? 'not-allowed' : 'pointer',
+                            opacity: isLoading ? 0.7 : 1
                           }}
                         >
                           Got it, next phase
