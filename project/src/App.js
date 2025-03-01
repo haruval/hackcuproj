@@ -633,7 +633,7 @@ This hidden section won't be visible to the user but will be used to update the 
                 ))
               )}
               {isLoading && (
-                <div style={{ textAlign: 'left', color: '#888' }}>cooking...</div>
+                <div style={{ textAlign: 'left', color: '#888' }}>chasing yarn...</div>
               )}
               <div ref={messagesEndRef} />
             </div>
@@ -657,7 +657,7 @@ This hidden section won't be visible to the user but will be used to update the 
               {/* Show loading indicator when loading */}
               {isLoading ? (
                 <div style={{ textAlign: 'center', color: '#888', marginTop: '20px' }}>
-                  Getting your build instructions ready...
+                  making biscuits...
                 </div>
               ) : buildComplete ? (
                 // Show completion message when build is complete
