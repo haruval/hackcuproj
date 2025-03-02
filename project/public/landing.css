@@ -1,0 +1,59 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+.landing-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0.5rem 1rem; /* Tiny padding on top and left */
+    background-color: #000000;
+}
+
+h1 {
+    font-size: 30rem; /* 10x bigger */
+    margin: 0;
+    color: #FFFFFF;
+    text-align: left;
+    line-height: 1; /* Remove extra spacing */
+    letter-spacing: -0.1em; /* Reduce character spacing */
+}
+
+p {
+    font-size: 2rem; /* Larger text */
+    text-align: left;
+    margin-top: 0.5rem; /* Small space below h1 */
+    color: #FFFFFF;
+}
+
+#enter-app-button {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #FFFFFF;
+    color: #000000;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+#enter-app-button:hover {
+    background-color: #DDDDDD;
+    transform: translateX(-50%) scale(1.05);
+}
