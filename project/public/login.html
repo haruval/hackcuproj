@@ -1,0 +1,18 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-300">
+    <div class="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
+        <form action="/login" method="POST">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="email">Username</label>
+                <input name="username" type="text" id="username" placeholder="Enter username here" class="w-full mt-1 input input-bordered" />
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700" for="password">Password</label>
+                <input name="password" type="password" id="password" placeholder="Enter password here" class="w-full mt-1 input input-bordered" />
+            </div>
+            <button type="submit" class="w-full btn text-gray-900 bg-light-green">Sign In</button>
+            <div class="flex justify-between mt-4 text-sm text-gray-900">
+                <a href="/register" class="hover:underline">Create an account</a>
+            </div>
+        </form>
+    </div>
+</div>
