@@ -6,7 +6,7 @@
 
 body, html {
     height: 100%;
-    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
     background-color: #000000;
     color: #FFFFFF;
 }
@@ -22,20 +22,25 @@ body, html {
 }
 
 h1 {
+    font-family: 'Helvetica Neue';
     font-size: 30rem; /* 10x bigger */
     margin: 0;
     color: #FFFFFF;
     text-align: left;
     line-height: 1; /* Remove extra spacing */
     letter-spacing: -0.05em; /* Reduce character spacing */
-    font-weight: bold;
+    font-weight: 1200;
+    font-style: italic;
 }
 
 p {
-    font-size: 2rem; /* Larger text */
+    font-size: 3rem; /* Larger text */
     text-align: left;
     margin-top: 0.5rem; /* Small space below h1 */
-    color: #FFFFFF;
+    color: #FF00CE;
+    font-style: light;
+    font-weight: 300;
+    
 }
 
 #enter-app-button {
@@ -57,4 +62,12 @@ p {
 #enter-app-button:hover {
     background-color: #DDDDDD;
     transform: translateX(-50%) scale(1.05);
+}
+
+.landing-image {
+    width: 20rem;  /* Square size */
+    height: 20rem; /* Ensures it's a perfect square */
+    object-fit: cover; /* Keeps the image content properly cropped */
+    margin: 2rem auto; /* Adds spacing and centers it horizontally */
+    display: block; /* Ensures proper centering */
 }
