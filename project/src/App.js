@@ -908,7 +908,7 @@ This hidden section won't be visible to the user but will be used to update the 
             >
               {pcParts.length === 0 ? (
                 <div style={{ color: '#AAAAAA', textAlign: 'center', marginTop: '20px' }}>
-                  No parts selected yet. Ask Lucy to help you build a PC!
+                  No parts selected yet.
                 </div>
               ) : (
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
