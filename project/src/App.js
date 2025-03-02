@@ -32,7 +32,7 @@ function App() {
     setAssistantId('asst_QjNSTqtCsL8J2Rs8A4UP4xNo');
     
     // Set document title
-    document.title = "Lucy - PC Builder";
+    document.title = "Lucy 🐈‍⬛";
   }, []);
 
   // Create a new thread when the component mounts
@@ -519,7 +519,7 @@ This hidden section won't be visible to the user but will be used to update the 
       position: 'relative', 
       width: '100%', 
       height: '100vh', 
-      fontFamily: '"Helvetica", "Arial", sans-serif',
+      fontFamily: '"Helvetica Neue", "Arial", sans-serif',
       backgroundColor: '#000000', // Black background
       display: 'flex',
       justifyContent: 'center',
@@ -542,7 +542,7 @@ This hidden section won't be visible to the user but will be used to update the 
             backgroundColor: '#000000',
             padding: '20px',
             borderRadius: '12px',
-            fontFamily: '"Helvetica", "Arial", sans-serif',
+            fontFamily: '"Helvetica Neue", "Arial", sans-serif',
             fontSize: '18px',
             border: '2px solid #FFFFFF',
             display: 'flex',
@@ -846,7 +846,7 @@ This hidden section won't be visible to the user but will be used to update the 
                   border: '1px solid #FFFFFF',
                   backgroundColor: '#111111',
                   color: '#FFFFFF',
-                  fontFamily: '"Helvetica", "Arial", sans-serif',
+                  fontFamily: '"Helvetica Neue", "Arial", sans-serif',
                   fontSize: '16px',
                 }}
                 type="text"
@@ -863,7 +863,7 @@ This hidden section won't be visible to the user but will be used to update the 
                   border: '1px solid #FFFFFF',
                   backgroundColor: '#333333',
                   color: '#FFFFFF',
-                  fontFamily: '"Helvetica", "Arial", sans-serif',
+                  fontFamily: '"Helvetica Neue", "Arial", sans-serif',
                   fontSize: '16px',
                   cursor: 'pointer',
                   transition: 'background-color 0.3s'
@@ -885,7 +885,7 @@ This hidden section won't be visible to the user but will be used to update the 
               backgroundColor: '#000000',
               padding: '20px',
               borderRadius: '12px',
-              fontFamily: '"Helvetica", "Arial", sans-serif',
+              fontFamily: '"Helvetica Neue", "Arial", sans-serif',
               fontSize: '16px',
               border: '2px solid #FFFFFF',
               display: 'flex',
@@ -908,7 +908,7 @@ This hidden section won't be visible to the user but will be used to update the 
             >
               {pcParts.length === 0 ? (
                 <div style={{ color: '#AAAAAA', textAlign: 'center', marginTop: '20px' }}>
-                  No parts selected yet. Ask Lucy to help you build a PC!
+                  No parts selected yet.
                 </div>
               ) : (
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>

@@ -1,0 +1,102 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body, html {
+    height: 100%;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    background-color: #000000;
+    color: #FFFFFF;
+  }
+  
+  .landing-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0.5rem 1rem; /* Tiny padding on top and left */
+    background-color: #000000;
+  }
+  
+  h1 {
+    font-family: 'Helvetica Neue';
+    font-size: 30rem; /* 10x bigger */
+    margin: 0;
+    color: #FFFFFF;
+    text-align: left;
+    line-height: 1; /* Remove extra spacing */
+    letter-spacing: -0.05em; /* Reduce character spacing */
+    font-weight: 1200;
+    font-style: italic;
+    animation-delay: 0.2s;
+  }
+  
+  p {
+    font-size: 3rem; /* Larger text */
+    text-align: left;
+    margin-top: 0.5rem; /* Small space below h1 */
+    color: #FF00CE;
+    font-style: light;
+    font-weight: 300;
+    animation-delay: 0.5s;
+  }
+  
+  /* Apply fade-in animation to all elements inside .landing-container */
+  .landing-container * {
+    opacity: 0; /* Start fully invisible */
+    transform: translateY(20px); /* Slight upward movement */
+    animation: fadeIn 1.5s ease-out forwards;
+  }
+  
+  /* Button styling - Positioned at bottom third, with independent animation */
+  #enter-app-button {
+    position: absolute;
+    bottom: 160px; /* Position at bottom third of the page */
+    left: 44%;
+    transform: translateX(-50%);
+    background-color: #FFFFFF;
+    color: #000000;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-style: italic;
+    transition: all 0.3s;
+    
+    /* Independent fade-in animation for the button */
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 1.5s ease-out forwards;
+    animation-delay: 1.7s; /* 0.5 seconds later than the main content */
+  }
+  
+  #enter-app-button:hover {
+    background-color: #DDDDDD;
+    transform: translateX(-50%) scale(1.05);
+  }
+  
+  .landing-image {
+    width: 20rem; /* Square size */
+    height: 20rem; /* Ensures it's a perfect square */
+    object-fit: cover; /* Keeps the image content properly cropped */
+    margin: 2rem auto; /* Adds spacing and centers it horizontally */
+    display: block; /* Ensures proper centering */
+    animation-delay: 0.8s;
+  }
+  
+  /* Keyframes for fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
