@@ -32,7 +32,7 @@ function App() {
     setAssistantId('asst_QjNSTqtCsL8J2Rs8A4UP4xNo');
     
     // Set document title
-    document.title = "Lucy - PC Builder";
+    document.title = "Lucy 🐈‍⬛";
   }, []);
 
   // Create a new thread when the component mounts
