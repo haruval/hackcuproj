@@ -27,7 +27,8 @@ h1 {
     color: #FFFFFF;
     text-align: left;
     line-height: 1; /* Remove extra spacing */
-    letter-spacing: -0.1em; /* Reduce character spacing */
+    letter-spacing: -0.05em; /* Reduce character spacing */
+    font-weight: bold;
 }
 
 p {
